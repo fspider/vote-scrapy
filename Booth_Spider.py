@@ -31,9 +31,11 @@ class QuotesSpider(scrapy.Spider):
 
     def start_requests(self):
         ini_cwd=os.getcwd()
+        st = 0
+        ed = 20
         # for j in range(int('12700'),int('12705'),1):#Changes are to be made here as per booth number of your choice
-        for j in range(140):#Changes are to be made here as per booth number of your choice
-            if j % 14 == 0:
+        for j in range(st, ed, 1):#Changes are to be made here as per booth number of your choice
+            if j % 10 == 0:
                 if self.individualFile:
                     self.individualFile.close()
                 if self.familyFile:
