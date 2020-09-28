@@ -54,10 +54,12 @@ class QuotesSpider(scrapy.Spider):
             for k in range(self.arr[j]):
                 stno = format(j+1, "03d") + format(k+1, "03d")
                 for i in range(1,4000,1):#Changes are to be made here as per selected range of your choice
-                    url='http://www.ceo.kerala.gov.in/searchDetails.html?height=500&width=800&paramValue='+str(stno)+str(i)
-                    yield scrapy.Request(url=url, callback=self.parse)
+                    addStr = str(stno)+str(i)
+                    url='http://www.ceo.kerala.gov.in/searchDetails.html?height=500&width=800&paramValue='+addStr
+                    yield scrapy.Request(url=url, callback=self.parse, meta={'addStr':addStr})
                 os.chdir(ini_cwd)
     def parse(self, response):
+        addStr = response.meta.get('addStr')
         # filename=response.url.split('=')
         # filename=filename[len(filename)-1]+'.html'
         # with open(filename, 'wb') as f:
@@ -86,7 +88,7 @@ class QuotesSpider(scrapy.Spider):
         # print(bloDetails, phoneNumbers, status)
         # print(idCardNo, nameOfElector, age, relationName, houseNoName, serialNo, assemblyConstituency, booth, bloDetails, phoneNumbers, status)
         try:
-            self.individualWriter.writerow([idCardNo, nameOfElector, age, relationName, houseNoName, serialNo, assemblyConstituency, booth, bloDetails, phoneNumbers, status])
+            self.individualWriter.writerow([idCardNo, nameOfElector, age, relationName, houseNoName, serialNo, assemblyConstituency, booth, bloDetails, phoneNumbers, status, addStr])
             self.individualFile.flush()
         except Exception as e:
             print("[Individual Write Error]", e)
@@ -106,7 +108,7 @@ class QuotesSpider(scrapy.Spider):
                 fIdCardNo = tds[6].select('td > a')[0].get_text().strip()
                 fStatus = tds[7].get_text().strip()
                 fPrimaryIdCardNo = idCardNo
-                self.familyWriter.writerow([fNameOfElector, fRelationName, fHouseName, fSerialNo, fLACNo, fPSNo, fIdCardNo, fStatus, fPrimaryIdCardNo])
+                self.familyWriter.writerow([fNameOfElector, fRelationName, fHouseName, fSerialNo, fLACNo, fPSNo, fIdCardNo, fStatus, fPrimaryIdCardNo, addStr])
             self.familyFile.flush()
         except Exception as e:
             print("[Family Write Error]", e)
@@ -117,7 +119,7 @@ class QuotesSpider(scrapy.Spider):
             self.log('Saved file %s' % filename)
             soup=BeautifulSoup(open(filename,encoding="utf-8"),'lxml')
             if('Invalid access to the page' in soup.text):
-                os.remove(filename)        
+                os.remove(filename)
 if __name__ == "__main__":
 
     process = CrawlerProcess()
