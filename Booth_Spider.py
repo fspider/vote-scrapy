@@ -45,7 +45,7 @@ class QuotesSpider(scrapy.Spider):
                 os.mkdir(str(j))
                 os.chdir(ini_cwd+'\\'+str(j))
 
-                self.individualFile = open(self.individualSavePath, "w", quoting=csv.QUOTE_ALL, encoding="utf-8", newline="")
+                self.individualFile = open(self.individualSavePath, "w", encoding="utf-8", newline="")
                 self.individualWriter = csv.writer(self.individualFile)
 
                 self.familyFile = open(self.familySavePath, "w", encoding="utf-8", newline="")
@@ -59,7 +59,7 @@ class QuotesSpider(scrapy.Spider):
                     yield scrapy.Request(url=url, callback=self.parse, meta={'addStr':addStr})
                 os.chdir(ini_cwd)
     def parse(self, response):
-        addStr = str(response.meta.get('addStr'))
+        addStr = 'a'+str(response.meta.get('addStr'))
         # filename=response.url.split('=')
         # filename=filename[len(filename)-1]+'.html'
         # with open(filename, 'wb') as f:
