@@ -87,6 +87,7 @@ class QuotesSpider(scrapy.Spider):
         # print(idCardNo, nameOfElector, age, relationName, houseNoName, serialNo, assemblyConstituency, booth, bloDetails, phoneNumbers, status)
         try:
             self.individualWriter.writerow([idCardNo, nameOfElector, age, relationName, houseNoName, serialNo, assemblyConstituency, booth, bloDetails, phoneNumbers, status])
+            self.individualFile.flush()
         except Exception as e:
             print("[Individual Write Error]", e)
             # print(idCardNo, nameOfElector, age, relationName, houseNoName, serialNo, assemblyConstituency, booth, bloDetails, phoneNumbers, status)
@@ -106,6 +107,7 @@ class QuotesSpider(scrapy.Spider):
                 fStatus = tds[7].get_text().strip()
                 fPrimaryIdCardNo = idCardNo
                 self.familyWriter.writerow([fNameOfElector, fRelationName, fHouseName, fSerialNo, fLACNo, fPSNo, fIdCardNo, fStatus, fPrimaryIdCardNo])
+            self.familyFile.flush()
         except Exception as e:
             print("[Family Write Error]", e)
             filename=response.url.split('=')
