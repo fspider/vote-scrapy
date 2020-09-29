@@ -43,7 +43,7 @@ class QuotesSpider(scrapy.Spider):
                 print("~~~~~~~~~~~~~~~~>>>>>>>>>")
 
                 os.mkdir(str(j))
-                os.chdir(ini_cwd+'\\'+str(j))
+                os.chdir(ini_cwd+'/'+str(j))
 
                 self.individualFile = open(self.individualSavePath, "w", encoding="utf-8", newline="")
                 self.individualWriter = csv.writer(self.individualFile)
