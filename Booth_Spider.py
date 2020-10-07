@@ -45,12 +45,6 @@ class QuotesSpider(scrapy.Spider):
                 os.mkdir(str(j))
                 os.chdir(ini_cwd+'/'+str(j))
 
-                self.individualFile = open(self.individualSavePath, "w", encoding="utf-8", newline="")
-                self.individualWriter = csv.writer(self.individualFile)
-
-                self.familyFile = open(self.familySavePath, "w", encoding="utf-8", newline="")
-                self.familyWriter = csv.writer(self.familyFile)
-
             for k in range(self.arr[j]):
                 stno = format(j+1, "03d") + format(k+1, "03d")
                 for i in range(1,4000,1):#Changes are to be made here as per selected range of your choice
@@ -88,28 +82,31 @@ class QuotesSpider(scrapy.Spider):
         # print(bloDetails, phoneNumbers, status)
         # print(idCardNo, nameOfElector, age, relationName, houseNoName, serialNo, assemblyConstituency, booth, bloDetails, phoneNumbers, status)
         try:
-            self.individualWriter.writerow([idCardNo, nameOfElector, age, relationName, houseNoName, serialNo, assemblyConstituency, booth, bloDetails, phoneNumbers, status, addStr])
-            self.individualFile.flush()
+            with open(self.individualSavePath, "a", encoding="utf-8", newline="") as individualFile:
+                self.individualWriter = csv.writer(individualFile)
+                self.individualWriter.writerow([idCardNo, nameOfElector, age, relationName, houseNoName, serialNo, assemblyConstituency, booth, bloDetails, phoneNumbers, status, addStr])
         except Exception as e:
             print("[Individual Write Error]", e)
             # print(idCardNo, nameOfElector, age, relationName, houseNoName, serialNo, assemblyConstituency, booth, bloDetails, phoneNumbers, status)
 
+
         if('No data available' in trs[14].text):
             return
         try:
-            for tr in trs[14:]:
-                tds = tr.select('tr > td')
-                fNameOfElector = tds[0].get_text()
-                fRelationName = tds[1].get_text()
-                fHouseName = tds[2].get_text()
-                fSerialNo = tds[3].get_text().strip()
-                fLACNo = tds[4].get_text().strip()
-                fPSNo = tds[5].get_text().strip()
-                fIdCardNo = tds[6].select('td > a')[0].get_text().strip()
-                fStatus = tds[7].get_text().strip()
-                fPrimaryIdCardNo = idCardNo
-                self.familyWriter.writerow([fNameOfElector, fRelationName, fHouseName, fSerialNo, fLACNo, fPSNo, fIdCardNo, fStatus, fPrimaryIdCardNo, addStr])
-            self.familyFile.flush()
+            with open(self.familySavePath, "a", encoding="utf-8", newline="") as familyFile:
+                self.familyWriter = csv.writer(familyFile)
+                for tr in trs[14:]:
+                    tds = tr.select('tr > td')
+                    fNameOfElector = tds[0].get_text()
+                    fRelationName = tds[1].get_text()
+                    fHouseName = tds[2].get_text()
+                    fSerialNo = tds[3].get_text().strip()
+                    fLACNo = tds[4].get_text().strip()
+                    fPSNo = tds[5].get_text().strip()
+                    fIdCardNo = tds[6].select('td > a')[0].get_text().strip()
+                    fStatus = tds[7].get_text().strip()
+                    fPrimaryIdCardNo = idCardNo
+                    self.familyWriter.writerow([fNameOfElector, fRelationName, fHouseName, fSerialNo, fLACNo, fPSNo, fIdCardNo, fStatus, fPrimaryIdCardNo, addStr])
         except Exception as e:
             print("[Family Write Error]", e)
             filename=response.url.split('=')
