@@ -32,6 +32,7 @@ class QuotesSpider(scrapy.Spider):
     def start_requests(self):
         ini_cwd=os.getcwd()
         st = 15
+        sst = 0
         ed = 20
         # for j in range(int('12700'),int('12705'),1):#Changes are to be made here as per booth number of your choice
         for j in range(st, ed, 1):#Changes are to be made here as per booth number of your choice
@@ -45,7 +46,10 @@ class QuotesSpider(scrapy.Spider):
                 os.mkdir(str(j))
                 os.chdir(ini_cwd+'/'+str(j))
 
-            for k in range(self.arr[j]):
+            pt = 0
+            if j == st:
+                pt = sst
+            for k in range(pt, self.arr[j], 1):
                 stno = format(j+1, "03d") + format(k+1, "03d")
                 for i in range(1,4000,1):#Changes are to be made here as per selected range of your choice
                     addStr = str(stno)+str(i)
