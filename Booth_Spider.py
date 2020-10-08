@@ -55,7 +55,7 @@ class QuotesSpider(scrapy.Spider):
                     addStr = str(stno)+str(i)
                     url='http://www.ceo.kerala.gov.in/searchDetails.html?height=500&width=800&paramValue='+addStr
                     yield scrapy.Request(url=url, callback=self.parse, meta={'addStr':addStr})
-                os.chdir(ini_cwd)
+                # os.chdir(ini_cwd)
     def parse(self, response):
         addStr = 'a'+str(response.meta.get('addStr'))
         # filename=response.url.split('=')
